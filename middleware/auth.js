@@ -12,6 +12,7 @@ function authenticateJWT(req, res, next) {
     req.user = payload; // create a current user
     return next();
   } catch (err) {
+    // error in this middleware isn't error -- continue on
     return next();
   }
 }
@@ -20,7 +21,8 @@ function authenticateJWT(req, res, next) {
 
 function ensureLoggedIn(req, res, next) {
   if (!req.user) {
-    return next({ status: 401, message: "Unauthorized" });
+    const err = new ExpressError("Unauthorized", 401);
+    return next(err);
   } else {
     return next();
   }
